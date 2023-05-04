@@ -1,13 +1,113 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
   <head>
     <meta charset="UTF-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Document</title>
+    <title>Список актуальных фильмов</title>
     <link rel="stylesheet" href="./css/style.css" />
+    <style>
+      /* Стили для хедера */
+      header {
+        background-color: orange;
+        padding: 20px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+      header img {
+        animation: rotate 2s ease-in-out infinite alternate;
+        margin-right: 20px;
+      }
+      @keyframes rotate {
+        0% {
+          transform: rotate(0deg);
+        }
+        100% {
+          transform: rotate(360deg);
+        }
+      }
+      .header-title {
+        font-size: 24px;
+        font-weight: bold;
+        text-transform: uppercase;
+        text-align: center;
+        flex-grow: 1;
+      }
+      /* Стили для заголовка */
+      h1 {
+        margin: 0;
+        color: white;
+        flex-grow: 1;
+      }
+      .sub-header {
+        font-size: 18px;
+        color: white;
+      }
+      /* Стили для кнопки */
+      button {
+        width: 150px;
+        height: 30px;
+        border: 1px solid blue;
+        background-color: white;
+        cursor: pointer;
+      }
+      .movie-card {
+        color: black;
+      }
+      p {
+        color: black;
+      }
+    </style>
   </head>
   <body>
+    <header>
+      <div>
+        <img src="./img/Frame 770814.png" alt="Cinemania" />
+        <span class="sub-header">Cinemania</span>
+      </div>
+      <h1>Список актуальных фильмов</h1>
+      <div class="header-title">CHATGPT - OVERPOWER</div>
+      <button type="button" id="changeTheme">Смена темы</button>
+    </header>
+    <ul id="movies"></ul>
+    <button type="button" id="load-more">Загрузить еще</button>
     <script src="./js/js-script.js" type="module"></script>
+    <script>
+      const changeThemeButton = document.getElementById("changeTheme");
+      changeThemeButton.addEventListener("click", function () {
+        const body = document.body;
+        const currentColor = window.getComputedStyle(body).backgroundColor;
+        if (currentColor === "rgb(0, 0, 0)") {
+          body.style.backgroundColor = "white";
+          const paragraphs = document.getElementsByTagName("p");
+          for (let i = 0; i < paragraphs.length; i++) {
+            paragraphs[i].style.color = "black";
+          }
+          const headings = document.getElementsByTagName("h2");
+          for (let i = 0; i < headings.length; i++) {
+            headings[i].style.color = "black";
+          }
+        } else {
+          body.style.backgroundColor = "black";
+          const paragraphs = document.getElementsByTagName("p");
+          for (let i = 0; i < paragraphs.length; i++) {
+            paragraphs[i].style.color = "white";
+          }
+          const headings = document.getElementsByTagName("h2");
+          for (let i = 0; i < headings.length; i++) {
+            headings[i].style.color = "white";
+          }
+        }
+      });
+    </script>
+    <script>
+      function changeTitleColor() {
+        const title = document.querySelector(".header-title");
+        title.style.color = `rgb(${Math.random() * 255}, ${
+          Math.random() * 255
+        }, ${Math.random() * 255})`;
+      }
+
+      setInterval(changeTitleColor, 1000);
+    </script>
   </body>
 </html>

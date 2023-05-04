@@ -86,3 +86,131 @@
 // console.log(nbYear(1500000, 0.25, 1000, 2000000));
 // console.log(nbYear(1500000, 2.5, 10000, 2000000));
 // console.log(nbYear(1000, 2, 50, 1214));
+
+// task #4
+
+// function candies(kids) {
+//   let totalCandies = 0;
+//   let maxAmountOfCandies = 0;
+//   if (kids.length <= 1) {
+//     return -1;
+//   }
+//   for (const kid of kids) {
+//     if (kid > maxAmountOfCandies) {
+//       maxAmountOfCandies = kid;
+//     }
+//   }
+//   for (const kido of kids) {
+//     if (kido < maxAmountOfCandies) {
+//       totalCandies = totalCandies + maxAmountOfCandies - kido;
+//     }
+//   }
+//   return totalCandies;
+// }
+
+// console.log(candies([5, 8, 6, 4]));
+// console.log(candies([1, 2, 4, 6]));
+// console.log(candies([1, 2]));
+// console.log(candies([4, 2]));
+// console.log(candies([1]));
+// console.log(candies([]));
+// console.log(candies([]));
+
+//  task #
+// function feast(beast, dish) {
+//   if (
+//     beast[0] === dish[0] &&
+//     beast[beast.length - 1] === dish[dish.length - 1]
+//   ) {
+//     return true;
+//   }
+//   return false;
+// }
+
+// console.log(feast("great blue heron", "garlic naan"));
+
+// const areaOrPerimeter = function (l, w) {
+//   if (l === w) {
+//     return l * w;
+//   }
+//   return 2 * l + 2 * w;
+// };
+// console.log(areaOrPerimeter(3, 3));
+// console.log(areaOrPerimeter(6, 10));
+
+const BASE_URL = "https://api.themoviedb.org/3/";
+const API_KEY = "e236468c654efffdf9704cd975a74a96";
+let page = 1;
+let moviesCount = 0;
+let loadedMovies = []; // keep track of loaded movies
+const moviesList = document.getElementById("movies");
+const loadMoreBtn = document.getElementById("load-more");
+
+function displayMovies(movies, i = 0, j = 3) {
+  for (let i = 0; i < movies.length; i += 3) {
+    const movieRow = document.createElement("div");
+    movieRow.className = "movie-row";
+    for (let j = i; j < i + 3 && j < movies.length; j++) {
+      const movie = movies[j];
+      // Check if movie is already loaded
+      if (!loadedMovies.includes(movie.id)) {
+        const movieElement = document.createElement("li");
+        movieElement.innerHTML = `<h2>${movie.title}</h2>
+                                    <img src="https://image.tmdb.org/t/p/w500/${movie.poster_path}" alt="${movie.title} Poster">
+                                    <p>${movie.overview}</p>`;
+        movieElement.addEventListener("click", () =>
+          showMovieDetails(movie.id)
+        );
+        movieRow.appendChild(movieElement);
+        loadedMovies.push(movie.id); // add to loaded movies
+        moviesCount++;
+      }
+    }
+    moviesList.appendChild(movieRow);
+  }
+}
+
+function loadMoreMovies() {
+  const start = page * 9 - moviesCount;
+  const end = start + 9;
+  fetch(`${BASE_URL}movie/now_playing?api_key=${API_KEY}&page=${page}`)
+    .then((response) => response.json())
+    .then((data) => {
+      const movies = data.results.slice(start, end);
+      displayMovies(movies, 0, 3);
+      if (data.total_pages <= page) {
+        loadMoreBtn.style.display = "none";
+      }
+    })
+    .catch((error) => console.error(error));
+  page++;
+}
+
+fetch(`${BASE_URL}movie/now_playing?api_key=${API_KEY}&page=${page}`)
+  .then((response) => response.json())
+  .then((data) => {
+    const movies = data.results.slice(0, 9);
+    displayMovies(movies);
+    if (data.total_pages <= page) {
+      loadMoreBtn.style.display = "none";
+    }
+  })
+  .catch((error) => console.error(error));
+
+loadMoreBtn.addEventListener("click", loadMoreMovies);
+
+// Отправляем GET-запрос на получение данных о фильмах
+fetch(`${BASE_URL}movie/now_playing?api_key=${API_KEY}&page=${page}`)
+  .then((response) => response.json())
+  .then((data) => {
+    const movies = data.results.slice(0, 9); // Ограничиваем количество фильмов до 10
+    displayMovies(movies);
+    // Если больше фильмов нет, скрываем кнопку "Загрузить больше фильмов"
+    if (data.total_pages <= page) {
+      loadMoreBtn.style.display = "none";
+    }
+  })
+  .catch((error) => console.error(error));
+
+// Добавляем обработчик события для кнопки "Загрузить больше фильмов"
+loadMoreBtn.addEventListener("click", loadMoreMovies);
